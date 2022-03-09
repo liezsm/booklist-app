@@ -1,7 +1,0 @@
-{
-  "books": [
-    { "id": 1, "name": "Book 1", "author": "Author1", "year": "1989" },
-    { "id": 2, "name": "Book 2", "author": "Author 2", "year": "2000" },
-    { "id": 3, "name": "Book 3", "author": "Author 3", "year": "2020" }
-  ]
-}

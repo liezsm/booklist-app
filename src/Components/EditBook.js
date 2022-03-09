@@ -1,33 +1,67 @@
-import bootstrap from "bootstrap/dist/css/bootstrap.min.css";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
-import { useState } from "react";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-const AddBook = () => {
-  // console.log(props);
+const EditBook = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [summary, setSummary] = useState("");
   const [year, setYear] = useState("");
 
+  const { id } = useParams();
   const history = useHistory();
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    fetch("http://localhost:3000/books/" + id, { signal: signal })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setTitle(data.title);
+        setAuthor(data.author);
+        setSummary(data.summary);
+        setYear(data.year);
+      })
+      .catch((err) => console.log(err));
 
-  const addbook = (e) => {
+    return () => {
+      controller.abort();
+    };
+  }, [id]);
+
+  const editbook = (e) => {
     e.preventDefault();
 
     const newBook = { title, author, summary, year };
-    fetch("http://localhost:3000/books", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify(newBook),
+    // console.log(newBook);
+
+    fetch("http://localhost:3000/books/" + id, {
+      method: "PUT",
+      body: JSON.stringify({
+        id: id,
+        title: title,
+        author: author,
+        summary: summary,
+        year: year,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
     }).then(() => {
-      console.log("successfully added");
+      console.log("Updated Successfully");
       history.push("/");
     });
+    // fetch("http://localhost:3000/books", {
+    //   method: "POST",
+    //   headers: { "Content-type": "application/json" },
+    //   body: JSON.stringify(newBook),
+    // }).then(() => {
+    //   console.log("successfully added");
+    // });
   };
 
   return (
     <div className='w-75 m-auto'>
-      <form id='book-form' onSubmit={addbook}>
+      <form id='book-form' onSubmit={editbook}>
         <div className='form-group'>
           <label>Title</label>
           <input
@@ -68,7 +102,7 @@ const AddBook = () => {
         </div>
         <input
           type='submit'
-          value='Add Book'
+          value='Update Book'
           className='btn btn-primary submitBtn mt-3'
         />
       </form>
@@ -76,4 +110,4 @@ const AddBook = () => {
   );
 };
 
-export default AddBook;
+export default EditBook;

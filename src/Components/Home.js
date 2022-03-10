@@ -18,7 +18,8 @@ const Home = () => {
   };
   useEffect(
     (url) => {
-      fetch("http://localhost:3000/books")
+//       fetch("http://localhost:3000/books")
+       fetch("https://my-json-server.typicode.com/liezsm/booklist-app-json-ver2/books")
         .then((resp) => {
           // if (!resp.ok) {
           //   throw Error("could not fetch the data for that resource");
